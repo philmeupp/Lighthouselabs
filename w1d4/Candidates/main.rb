@@ -19,12 +19,17 @@ require './filters'
  # puts  bilingual?(2)
  # # puts find(2)
 # puts @candidates[0][:date_applied] 
-puts applied_recent?(0)
-puts 30.day.ago.to_date
+# puts applied_recent?(0)
+# puts 30.day.ago.to_date
 
+# puts of_age?(0)
+# puts of_age?(1)
+# puts of_age?(2)
+# puts of_age?(6)
 
 # binding.pry
 # puts @candidates[0][:years_of_experience]
-# pp qualified_candidates
+q = qualified_candidates(@candidates)
+binding.pry
 
 
