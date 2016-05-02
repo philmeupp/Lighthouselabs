@@ -4,6 +4,7 @@ require_relative 'questions'
 ###
 ## Simple Math game, takes in users input based on math questions generated.
 ###
+@generate = Questions.new
 
 # The main engine of the game
 def start_game
@@ -16,11 +17,42 @@ def start_game
   @p2 = Players.new(name2)
   @gameover = false
   while !@gameover 
-    generate_numbers
+    @generate.generate_numbers
     user_response        
   end
 end
 
+def user_response
+  print "#{@p1.name}: "
+  user_input = gets.chomp
+  if user_input.to_i == @generate.sum  
+    @p1.plus_one_score
+    puts  "\tCORRECT!".green 
+    display_score
+  else
+    @p1.minus_player_life
+    puts "\tWRONG! you have #{@p1.player_life} left".red
+    display_score
+    game_over? if @p1.player_life <= 0
+  end
+  # I feel like the return below code is gross and redundant.. But without it, if player 1 choose to
+  # discontinue after gameover?, code still runs through to player 2's response before actaully
+  # returning true to start_game. 
+  return @gameover == true if @gameover == true
+  @generate.generate_numbers
+  print "#{@p2.name}: "
+  user_input = gets.chomp
+  if user_input.to_i == @generate.sum  
+    @p2.plus_one_score
+    puts  "\tCORRECT!".green 
+    display_score
+  else
+    @p2.minus_player_life
+    puts "\tWRONG! you have #{@p2.player_life} left".red
+    display_score
+    game_over? if @p2.player_life <= 0
+  end
+end
 
 def game_over?
   print "\tRestart? y/n  ".light_red
@@ -35,46 +67,10 @@ def game_over?
   end
 end
 
-def user_response
-  print "#{@p1.name}: "
-  user_input = gets.chomp
-  if user_input.to_i == @sum  
-    @p1.plus_one_score
-    puts  "\tCORRECT!".green 
-    display_score
-  else
-    @p1.minus_player_life
-    puts "\tWRONG! you have #{@p1.player_life} left"
-    display_score
-    game_over? if @p1.player_life <= 0
-  end
-  # I feel like the return below code is gross and redundant.. But without it, if player 1 choose to
-  # discontinue after gameover?, code still runs through to player 2's response before actaully
-  # returning true to start_game. 
-  return @gameover == true if @gameover == true
-  generate_numbers
-  print "#{@p2.name}: "
-  user_input = gets.chomp
-  if user_input.to_i == @sum  
-    @p2.plus_one_score
-    puts  "\tCORRECT!".green 
-    display_score
-  else
-    @p2.minus_player_life
-    puts "\tWRONG! you have #{@p2.player_life} left"
-    display_score
-    game_over? if @p2.player_life <= 0
-  end
-end
-
 def display_score
   puts "\t#{@p1.name}: #{@p1.score}".cyan 
   puts "\t#{@p2.name}: #{@p2.score}".yellow
 end
-
-
-
-
 
 
 start_game

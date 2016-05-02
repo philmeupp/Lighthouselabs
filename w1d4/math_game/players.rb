@@ -2,8 +2,6 @@
 class Players
 
   attr_accessor :name
-
-  # :p1, :p2, :player_1_life, :player_2_life, :player_1_score, :player_2_score
   
   def initialize(name)
     @name = name
@@ -38,7 +36,9 @@ class Players
   end
 
   def reset_life
-    @player_lives += 3
+    #player life = 0
+    #player life + 3
+    @player_lives = 3
   end
 
 end
