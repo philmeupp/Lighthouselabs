@@ -4,11 +4,13 @@ require_relative 'footman'
 
 class Barracks
 
-  attr_accessor :food, :gold
+  attr_reader :food, :gold, :health_points, :lumber
 
-  def initialize(food = 80, gold = 1000)
-    @food = food
+  def initialize(food = 80, gold = 1000, health_points = 500, lumber = 500)
+    @food = food  
     @gold = gold
+    @health_points = health_points
+    @lumber = lumber
   end
 
   def can_train_footman?
@@ -36,5 +38,23 @@ class Barracks
       peasant
     end
   end
+
+  def can_train_seigeEngine?
+    self.gold >= 200 && self.lumber >= 60
+  end
+
+  def train_seigeEngine
+    if can_train_seigeEngine?
+    seigeEngine = SeigeEngine.new
+    @gold -= 200
+    @lumber -= 60
+    end
+  end
+
+  def damage(attack_power)
+    @health_points -= attack_power
+  end
+
+
 
 end
