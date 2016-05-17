@@ -1,3 +1,4 @@
+require 'pg'
 require 'csv'
 require 'pry'
 
@@ -5,8 +6,18 @@ require 'pry'
 # The ContactList class will work with Contact objects instead of interacting with the CSV file directly
 class Contact
 
+
   attr_accessor :name, :email
   attr_reader :id
+
+  
+    @@conn = PG.connect({
+      host: 'localhost',
+      dbname: 'contacts',
+      user: 'development',
+      password: 'development'
+    })
+  
 
   # Creates a new contact object
   # @param name [String] The contact's name
@@ -23,15 +34,32 @@ class Contact
 
     # Opens 'contacts.csv' and creates a Contact object for each line in the file (aka each contact).
     # @return [Array<Contact>] Array of Contact objects
+    # def all
+    #   arr = []
+    #   CSV.foreach('contact.csv') do |row|
+    #     contact = Contact.new(row[0], row[1], row[2])
+    #     arr << contact
+    #   end
+    #   arr
+    #   # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
+    # end
+
     def all
       arr = []
-      CSV.foreach('contact.csv') do |row|
-        contact = Contact.new(row[0], row[1], row[2])
-        arr << contact
+      @@conn.exec("SELECT * FROM contacts;") do |contact_list|
+        contact_list.each do |contact|
+        arr << create_from_row(contact)
+        end
       end
       arr
-      # TODO: Return an Array of Contact instances made from the data in 'contacts.csv'.
     end
+
+
+    def create_from_row(contact)
+      Contact.new(contact["name"], contact["email"])
+    end
+
+
 
     # Creates a new contact, adding it to the csv file, returning the new contact.
     # @param name [String] the new contact's name
@@ -74,7 +102,5 @@ class Contact
       arr
       # TODO: Select the Contact instances from the 'contacts.csv' file whose name or email attributes contain the search term.
     end
-
   end
-
 end
